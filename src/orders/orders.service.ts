@@ -50,6 +50,10 @@ export class OrdersService {
         include: { Status: true, log: { include: { Status: true } } },
       });
 
+      if (!response) {
+        throw new NotFoundException('Cannot find order!');
+      }
+
       const newVal = {
         ...response,
         status: response.Status.name,
@@ -71,15 +75,15 @@ export class OrdersService {
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
     const { statusId, ...rest } = updateOrderDto;
+    const founded = await this.findOne(id);
+
+    if (!founded) {
+      throw new NotFoundException('Order not found!');
+    }
+
+    const logs = founded.log.map((item) => item.id);
+
     try {
-      const founded = await this.findOne(id);
-
-      if (!founded) {
-        throw new NotFoundException('Order not found!');
-      }
-
-      const logs = founded.log.map((item) => item.id);
-
       return await this.prisma.order.update({
         where: { id },
         data: {
