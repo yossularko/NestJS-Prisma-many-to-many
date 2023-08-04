@@ -14,7 +14,7 @@ model Post {
   id    Int    @id @default(autoincrement())
   title String
   tags  Tag[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
@@ -23,36 +23,58 @@ model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
 
-model Transaction {
-  id     Int        @id @default(autoincrement())
-  title  String
-  status TransLog[]
-  
+model Order {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  Status   Status? @relation(fields: [statusId], references: [id])
+  statusId Int?
+
+  log Log[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
 
-model TransLog {
-  id          Int          @id @default(autoincrement())
-  Transaction Transaction? @relation(fields: [transId], references: [id])
-  Status      Status?      @relation(fields: [statusId], references: [id])
-  transId     Int?
-  statusId    Int?
-  
+model Inventory {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  Status   Status? @relation(fields: [statusId], references: [id])
+  statusId Int?
+
+  log Log[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
 
 model Status {
-  id   Int        @id @default(autoincrement())
-  name String     @unique
-  trx  TransLog[]
-  
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  orders      Order[]
+  inventories Inventory[]
+  log         Log[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model Log {
+  id        Int        @id @default(autoincrement())
+  Order     Order?     @relation(fields: [orderId], references: [id])
+  Inventory Inventory? @relation(fields: [invId], references: [id])
+  Status    Status?    @relation(fields: [statusId], references: [id])
+  orderId   Int?
+  invId     Int?
+  statusId  Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
