@@ -14,18 +14,27 @@ model Post {
   id    Int    @id @default(autoincrement())
   title String
   tags  Tag[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 model Transaction {
   id     Int        @id @default(autoincrement())
   title  String
   status TransLog[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 model TransLog {
@@ -34,10 +43,16 @@ model TransLog {
   Status      Status?      @relation(fields: [statusId], references: [id])
   transId     Int?
   statusId    Int?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 model Status {
   id   Int        @id @default(autoincrement())
   name String     @unique
   trx  TransLog[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
